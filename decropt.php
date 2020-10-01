@@ -9,7 +9,7 @@ echo "进入php文件\n\n\n\n\n";
 //     //日志方法，具体自己实现
 //     $key="e45e329feb5d925b";
 //  }
-isset($arr['k'])?:$key='e45e329feb5d925b';
+isset($arr['k'])?$key=$arr['k']:$key='e45e329feb5d925b';
 isset($arr['t'])?$http_type=$arr['t']:$http_type='requests';
 // echo "this is \$key:".$key."\n this is \$http_type:".$http_type;
 // echo "\$post is :".$post."\n\n";

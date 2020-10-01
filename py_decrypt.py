@@ -11,12 +11,12 @@ import re
 import argparse
 
 
-def extract_data(type_http,raw_data):
+def extract_data(type_http,raw_data,decrypt_key):
     # print('raw_data is :',raw_data)
     filename = str(int(time.time()))
 
     open(filename,'a+').write(raw_data)
-    b = Popen('php decropt.php -f '+filename+' -t '+type_http+' -d t', shell=True, stdout=PIPE, stderr=STDOUT)
+    b = Popen('php decropt.php -f '+filename+' -t '+type_http+' -d t '+' -k '+decrypt_key, shell=True, stdout=PIPE, stderr=STDOUT)
 
     result = b.stdout.read()
     # print("the result is :",result)
@@ -33,7 +33,7 @@ def get_safe_str(in_str) -> str:
         return in_str.decode('latin1')
 
 
-def main(file_path):
+def main(file_path,decrypt_key):
     raw_result = {}
     load_layer('http')
     pkts = sniff(offline=file_path,session=TCPSession)
@@ -92,7 +92,7 @@ def main(file_path):
 
 
     for key,value in raw_result.items():
-        extract_data(value[0],value[1])
+        extract_data(value[0],value[1],decrypt_key)
         time.sleep(1)
         # open(key,'a+').write(value)
         print("\n\n\n")
@@ -102,11 +102,14 @@ if __name__ == "__main__":
 
     parse = argparse.ArgumentParser(description="redis利用脚本")
     parse.add_argument('-f','--file',help="输入pcap包文件路径")
+    parse.add_argument('-k','--key',help='输入key秘钥值，默认为冰蝎默认密码',default='e45e329feb5d925b')
     args = parse.parse_args()
     if not args.file:
         print("请输出pcap包路径")
         exit()
-
+    decrypt_key = args.key
     file_path = args.file
-    
-    main(file_path)
+
+    print('文件路径：',file_path,' 秘钥为：',decrypt_key)
+    # exit()
+    main(file_path,decrypt_key)
